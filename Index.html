@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Sebastián Hortúa</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: #0a0a0a;
+    color: #d8d8d8;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    padding: 0 8vw 80px;
+  }
+  #hero img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: center top;
+    filter: brightness(0.38) saturate(0.6);
+  }
+  #hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, rgba(10,10,10,0.85) 40%, transparent 100%),
+                linear-gradient(to top, rgba(10,10,10,0.95) 0%, transparent 50%);
+  }
+  .hero-text {
+    position: relative; z-index: 2;
+    max-width: 600px;
+  }
+  .hero-city {
+    font-family: -apple-system, sans-serif;
+    font-size: 0.7rem; letter-spacing: 5px;
+    text-transform: uppercase; color: #777;
+    margin-bottom: 20px;
+  }
+  .hero-name {
+    font-size: clamp(3.5rem, 9vw, 7.5rem);
+    font-weight: 400; line-height: 0.95;
+    color: #f0f0f0; letter-spacing: -2px;
+  }
+  .hero-name em {
+    font-style: italic; color: #9b8af4;
+  }
+  .hero-sub {
+    margin-top: 28px;
+    font-family: -apple-system, sans-serif;
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    color: #666; font-weight: 300; line-height: 1.7;
+    max-width: 440px;
+  }
+  .hero-line {
+    width: 40px; height: 1px;
+    background: #9b8af4; margin: 32px 0;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 120px 32px;
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .section.visible { opacity: 1; transform: translateY(0); }
+
+  .label {
+    font-family: -apple-system, sans-serif;
+    font-size: 0.65rem; letter-spacing: 5px;
+    text-transform: uppercase; color: #555;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 400; line-height: 1.2;
+    color: #ececec; letter-spacing: -0.5px;
+    margin-bottom: 32px;
+  }
+  h2 em { font-style: italic; color: #9b8af4; }
+
+  p {
+    font-size: 1.05rem; line-height: 1.9;
+    color: #777; margin-bottom: 20px;
+  }
+  p strong { color: #bbb; font-weight: 400; }
+
+  blockquote {
+    border-left: 1px solid #9b8af4;
+    padding: 4px 0 4px 28px;
+    margin: 48px 0;
+    font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+    color: #aaa; font-weight: 400; line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(to right, transparent, #222, transparent);
+    margin: 0 auto;
+  }
+
+  /* ── STATS ── */
+  .stats {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 1px; background: #161616;
+    border: 1px solid #1a1a1a; border-radius: 4px;
+    overflow: hidden; margin-top: 48px;
+  }
+  .stat {
+    background: #0a0a0a; padding: 40px 32px;
+  }
+  .stat-n {
+    font-size: 3rem; font-weight: 300;
+    color: #9b8af4; letter-spacing: -2px; line-height: 1;
+  }
+  .stat-l {
+    font-family: -apple-system, sans-serif;
+    font-size: 0.75rem; letter-spacing: 2px;
+    text-transform: uppercase; color: #444;
+    margin-top: 10px;
+  }
+
+  /* ── VENTURES ── */
+  .ventures { margin-top: 48px; display: flex; flex-direction: column; gap: 1px; }
+  .vc {
+    padding: 36px 0;
+    border-bottom: 1px solid #161616;
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 20px; align-items: start;
+    transition: opacity 0.3s;
+  }
+  .vc:hover { opacity: 0.7; }
+  .vc-name {
+    font-size: 1.15rem; color: #ddd; font-weight: 400;
+    margin-bottom: 8px; font-family: -apple-system, sans-serif;
+  }
+  .vc-desc { font-size: 0.88rem; color: #555; line-height: 1.7; margin: 0; }
+  .vc-tag {
+    font-family: -apple-system, sans-serif;
+    font-size: 0.65rem; letter-spacing: 2px;
+    text-transform: uppercase; color: #9b8af4;
+    white-space: nowrap; padding-top: 4px;
+  }
+
+  /* ── TIMELINE ── */
+  .tl { margin-top: 48px; }
+  .tl-row {
+    display: grid; grid-template-columns: 80px 1fr;
+    gap: 24px; padding: 28px 0;
+    border-bottom: 1px solid #141414;
+  }
+  .tl-y {
+    font-family: -apple-system, sans-serif;
+    font-size: 0.7rem; letter-spacing: 2px;
+    color: #444; padding-top: 4px;
+    text-transform: uppercase;
+  }
+  .tl-t { font-size: 1rem; color: #ccc; margin-bottom: 8px; font-family: -apple-system, sans-serif; }
+  .tl-d { font-size: 0.88rem; color: #555; line-height: 1.7; margin: 0; }
+
+  /* ── PILLARS ── */
+  .pillars { margin-top: 48px; }
+  .pillar {
+    padding: 36px 0; border-bottom: 1px solid #141414;
+  }
+  .pillar-t {
+    font-size: 1rem; color: #ccc;
+    font-family: -apple-system, sans-serif;
+    margin-bottom: 10px;
+  }
+  .pillar-d { font-size: 0.88rem; color: #555; line-height: 1.7; margin: 0; }
+
+  /* ── CLOSING ── */
+  #closing {
+    max-width: 720px; margin: 0 auto;
+    padding: 120px 32px 160px;
+    text-align: center;
+    opacity: 0; transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  #closing.visible { opacity: 1; transform: translateY(0); }
+  #closing h2 { font-size: clamp(2rem, 5vw, 3.5rem); }
+  #closing p { max-width: 480px; margin-inline: auto; margin-bottom: 48px; }
+  .btn {
+    font-family: -apple-system, sans-serif;
+    font-size: 0.7rem; letter-spacing: 4px;
+    text-transform: uppercase; color: #9b8af4;
+    text-decoration: none;
+    border: 1px solid #9b8af4;
+    padding: 16px 36px; border-radius: 2px;
+    transition: background 0.3s, color 0.3s;
+    display: inline-block;
+  }
+  .btn:hover { background: #9b8af4; color: #0a0a0a; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid #141414;
+    padding: 32px 8vw;
+    display: flex; justify-content: space-between;
+    font-family: -apple-system, sans-serif;
+    font-size: 0.65rem; letter-spacing: 3px;
+    text-transform: uppercase; color: #333;
+  }
+
+  @media(max-width:600px) {
+    .stats { grid-template-columns: 1fr; }
+    .vc { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div id="hero">
+  <img src="Sebas_-final.jpg" alt="Sebastián Hortúa"/>
+  <div class="hero-text">
+    <p class="hero-city">Bogotá · Colombia — Vancouver · Canadá</p>
+    <h1 class="hero-name">Sebas<em>tián</em><br/>Hortúa</h1>
+    <div class="hero-line"></div>
+    <p class="hero-sub">Empresario, estratega y constructor de futuros con inteligencia artificial. Doce años en el mundo corporativo. Una vida entera de curiosidad tecnológica. Una decisión que lo cambió todo.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- HISTORIA -->
+<div class="section" id="s1">
+  <p class="label">El origen</p>
+  <h2>Un hombre que siempre supo <em>para qué estaba hecho.</em></h2>
+  <p>Durante más de doce años, Sebastián construyó una carrera sólida en el mundo corporativo latinoamericano. Retail, banca, grandes marcas. Presupuestos millonarios, equipos numerosos, negociaciones en varios países de América Latina.</p>
+  <blockquote>"Siempre supe que la tecnología era mi llamado real. Lo guardé como hobby durante años. Hasta que decidí que ya no podía seguir postergándolo."</blockquote>
+  <p>A los 38 años, lo que alguna vez fue una curiosidad silenciosa —sistemas que construía de noche, código que escribía por puro amor— se convirtió en su misión principal. Sebastián eligió construir algo propio. Desde cero. Con inteligencia artificial como herramienta y la libertad como norte.</p>
+</div>
+
+<div class="divider"></div>
+
+<!-- NÚMEROS -->
+<div class="section" id="s2">
+  <p class="label">En cifras</p>
+  <h2>Una trayectoria que habla <em>por sí sola.</em></h2>
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-n">12+</div>
+      <div class="stat-l">Años en roles comerciales de alto nivel</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">3</div>
+      <div class="stat-l">Empresas propias activas en 2026</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">2</div>
+      <div class="stat-l">Países donde opera hoy</div>
+    </div>
+    <div class="stat">
+      <div class="stat-n">∞</div>
+      <div class="stat-l">Profesionales latinos que quiere transformar</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- TRAYECTORIA -->
+<div class="section" id="s3">
+  <p class="label">La línea de tiempo</p>
+  <h2>Cada etapa tenía <em>un propósito.</em></h2>
+  <div class="tl">
+    <div class="tl-row">
+      <div class="tl-y">Inicio</div>
+      <div>
+        <div class="tl-t">Retail & Comercial — Cencosud, Manufacturas Eliot</div>
+        <p class="tl-d">Gerencia de retail, presupuestos de gran escala y negociaciones en mercados latinoamericanos. Aprendió que los negocios son, ante todo, personas.</p>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-y">La banca</div>
+      <div>
+        <div class="tl-t">Product Manager — Sector Financiero</div>
+        <p class="tl-d">Alianzas comerciales, adopción de productos y estrategias de partnerships a nivel nacional. Mientras tanto, en paralelo, cultivaba su fascinación por la IA.</p>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-y">2025</div>
+      <div>
+        <div class="tl-t">El giro</div>
+        <p class="tl-d">Construyó sus primeras empresas propias antes de necesitarlo. VirtualStage, Applied Inc., PowerClean BC. No esperó al momento perfecto. Actuó antes de estar listo.</p>
+      </div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-y">Jul 2026</div>
+      <div>
+        <div class="tl-t">MBA — University Canada West, Vancouver</div>
+        <p class="tl-d">Un nuevo continente. El mismo fuego. Sebastián llega a Canadá con tres empresas operando y una comunidad creciendo en toda América Latina.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- VENTURES -->
+<div class="section" id="s4">
+  <p class="label">Ecosistema</p>
+  <h2>No construyó una empresa.<br/><em>Construyó un ecosistema.</em></h2>
+  <div class="ventures">
+    <div class="vc">
+      <div>
+        <div class="vc-name">Applied Inc.</div>
+        <p class="vc-desc">Automatización con IA para PYMEs canadienses. Transforma los procesos más pesados de pequeñas empresas en flujos inteligentes que trabajan solos.</p>
+      </div>
+      <div class="vc-tag">Vancouver</div>
+    </div>
+    <div class="vc">
+      <div>
+        <div class="vc-name">VirtualStage</div>
+        <p class="vc-desc">Home staging virtual con IA. Convierte propiedades vacías en espacios que enamoran a compradores, sin mover un solo mueble. Proyección: $15M ARR.</p>
+      </div>
+      <div class="vc-tag">Real Estate</div>
+    </div>
+    <div class="vc">
+      <div>
+        <div class="vc-name">PowerClean BC</div>
+        <p class="vc-desc">Servicios de limpieza con operaciones automatizadas. Un agente de voz con IA gestiona consultas, reservas y seguimiento de clientes.</p>
+      </div>
+      <div class="vc-tag">Servicios</div>
+    </div>
+    <div class="vc">
+      <div>
+        <div class="vc-name">Neural Studio</div>
+        <p class="vc-desc">Su comunidad más importante. Una plataforma en español donde enseña a profesionales latinoamericanos sin formación técnica a usar la IA para crear negocios propios y vivir con libertad.</p>
+      </div>
+      <div class="vc-tag">Comunidad</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- FILOSOFÍA -->
+<div class="section" id="s5">
+  <p class="label">Lo que lo mueve</p>
+  <h2>Sus principios no son <em>decorativos.</em></h2>
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-t">La libertad se construye, no se espera</div>
+      <p class="pillar-d">Sebastián no esperó a tener todo perfecto. Construyó mientras avanzaba. Porque la libertad no es un destino: es una decisión que se toma cada día.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-t">La tecnología es el mayor igualador de oportunidades</div>
+      <p class="pillar-d">La IA puede dar a cualquier persona —sin importar su país, idioma o capital inicial— las mismas herramientas que antes solo tenían las grandes corporaciones.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-t">El conocimiento compartido multiplica su valor</div>
+      <p class="pillar-d">Por eso Neural Studio existe. Sebastián entiende que enseñar es la forma más poderosa de consolidar lo que uno sabe, y de dejar algo que perdure.</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-t">La familia es el motor, no el sacrificio</div>
+      <p class="pillar-d">Todo lo que construye tiene un nombre y una razón de ser. El MBA, las empresas, la comunidad — son cartas de amor hacia el futuro de los suyos.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CIERRE -->
+<div id="closing">
+  <p class="label">Lo que viene</p>
+  <h2>La historia <em>apenas comienza.</em></h2>
+  <p>Vancouver, julio 2026. Un nuevo continente. El mismo fuego. Sebastián no va a estudiar qué es el éxito. Va a escalarlo.</p>
+  <a href="mailto:hola@sebastianhortua.com" class="btn">Escribir a Sebastián</a>
+</div>
+
+<footer>
+  <span>Sebastián Hortúa</span>
+  <span>Bogotá → Vancouver · 2026</span>
+</footer>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.section, #closing').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
